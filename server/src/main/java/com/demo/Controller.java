@@ -1,7 +1,6 @@
 package com.demo;
 
 import io.dapr.client.DaprClient;
-import io.dapr.client.DaprClientBuilder;
 import io.dapr.client.domain.Metadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +20,14 @@ public class Controller {
     private static final String MESSAGE_TTL_IN_SECONDS = "1000";
     private static final String TOPIC_NAME = "common-topic";
     private static final String PUBSUB_NAME = "pubsub";
-    private static final DaprClient client = new DaprClientBuilder().build();
+    private final DaprClient client;
+
+    private final MessageRepository messageRepository;
+
+    public Controller(DaprClient client, MessageRepository messageRepository) {
+        this.client = client;
+        this.messageRepository = messageRepository;
+    }
 
     @GetMapping("/health")
     @ResponseStatus(code = HttpStatus.OK)
@@ -35,7 +41,13 @@ public class Controller {
                 id,
                 singletonMap(Metadata.TTL_IN_SECONDS, MESSAGE_TTL_IN_SECONDS)).block();
         logger.info("PubSub message sent: " + id);
+        messageRepository.saveLastMessageId(id);
         return "healthy";
     }
 
+    @GetMapping("/last")
+    @ResponseStatus(code = HttpStatus.OK)
+    public int last() {
+        return messageRepository.getLastMessageId();
+    }
 }
