@@ -8,7 +8,7 @@ import { DaprClient, HttpMethod } from "@dapr/dapr";
 const app = express();
 app.use(express.json());
 
-const port = process.env.APP_PORT ?? '3000';
+const port = '3000';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const publicPath = join(__dirname, 'public');
