@@ -23,7 +23,7 @@ dapr run --app-id receiverLog --app-protocol http --app-port 8002 --dapr-http-po
 node app.js
 ```
 
-### Mini klient + server js (mozliwe ze sie w portach zagubilam ;) )
+### Mini klient + server js
 ```
 dapr run --app-id app --app-port 3000 --dapr-http-port 3500 node server.js
 ```
