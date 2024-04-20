@@ -31,3 +31,9 @@ adres:
 ```
 http://localhost:3000/
 ```
+
+### Zipkin observability
+Connect to Zipkin ui
+```
+http://localhost:9411/zipkin/
+```
