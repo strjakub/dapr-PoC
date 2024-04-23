@@ -1,0 +1,10 @@
+version: '3'
+services:
+  redis-state-store:
+    container_name: redis-state-store
+    image: redis
+    ports:
+      - "6380:6380"
+    volumes:
+      - ./state-store/redis.conf:/usr/local/etc/redis/redis.conf
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
