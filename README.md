@@ -41,3 +41,40 @@ Connect to Zipkin ui
 ```
 http://localhost:9411/zipkin/
 ```
+
+### K8S
+Setup cluster:
+```
+https://docs.dapr.io/operations/hosting/kubernetes/cluster/
+```
+I used minikube option:
+```
+minikube config set vm-driver virtualbox
+```
+Create cluster - it is suggested to use it without those 2 flags but they were necesarry for me
+```
+minikube start --cpus=4 --memory=4096 --no-vtx-check --embed-certs
+```
+
+Make sure you are connected to minikube cluster:
+```
+kubectl config get-contexts
+```
+Init dapr in cluster (I had to unlock k8s in Docker Desktop)
+
+```
+dapr init -k --dev
+```
+Create server deployment
+```
+kubectl apply -f k8s/server.yaml
+```
+
+Wait for pods to be created and check IP address of a pod
+```
+kubectl describe pod <server-pod-name>
+```
+Run health endpoint to check whether everything works
+```
+kubectl exec -it <server-pod-name> -- curl <ip-address>:8001/health
+```
