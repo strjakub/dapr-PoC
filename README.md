@@ -3,8 +3,12 @@
 - PubSub (publisher)
 
 Run special docker container for state store:
+```
 cd docker
+```
+```
 docker-compose up -d
+```
 
 Windows:
 ```
