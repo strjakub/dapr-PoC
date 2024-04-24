@@ -38,7 +38,7 @@ public class Controller {
         return "healthy";
     }
 
-    @GetMapping("/generatedId")
+    @GetMapping("/id")
     public int generatedId() {
         int id = random.nextInt(999) + 1;
         publishMessage(id, TOPIC_NAME);
