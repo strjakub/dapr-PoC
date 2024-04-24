@@ -19,7 +19,9 @@ public class Controller {
     private static final Logger logger = LoggerFactory.getLogger(Controller.class);
     private static final String MESSAGE_TTL_IN_SECONDS = "1000";
     private static final String TOPIC_NAME = "common-topic";
+    private static final String SECOND_TOPIC_NAME = "second-topic";
     private static final String PUBSUB_NAME = "pubsub";
+    private static final Random random = new Random();
     private final DaprClient client;
 
     private final MessageRepository messageRepository;
@@ -38,15 +40,10 @@ public class Controller {
 
     @GetMapping("/generatedId")
     public int generatedId() {
-        Random random = new Random();
         int id = random.nextInt(999) + 1;
-        client.publishEvent(
-                PUBSUB_NAME,
-                TOPIC_NAME,
-                id,
-                singletonMap(Metadata.TTL_IN_SECONDS, MESSAGE_TTL_IN_SECONDS)).block();
-        logger.info("PubSub message sent: " + id);
-        messageRepository.saveLastMessageId(id);
+        publishMessage(id, TOPIC_NAME);
+        publishMessage(id + 1, SECOND_TOPIC_NAME);
+        messageRepository.saveLastMessageId(id + 1);
         return id;
     }
 
@@ -54,5 +51,15 @@ public class Controller {
     @ResponseStatus(code = HttpStatus.OK)
     public int last() {
         return messageRepository.getLastMessageId();
+    }
+
+    private void publishMessage(int message, String topic) {
+        client.publishEvent(
+                PUBSUB_NAME,
+                topic,
+                message,
+                singletonMap(Metadata.TTL_IN_SECONDS, MESSAGE_TTL_IN_SECONDS)).block();
+        logger.info(String.format("PubSub message sent: %s to the topic: %s", message, topic));
+
     }
 }
