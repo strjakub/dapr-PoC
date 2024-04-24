@@ -36,8 +36,8 @@ public class Controller {
         return "healthy";
     }
 
-    @GetMapping("/generateId")
-    public int generateId() {
+    @GetMapping("/generatedId")
+    public int generatedId() {
         Random random = new Random();
         int id = random.nextInt(999) + 1;
         client.publishEvent(
