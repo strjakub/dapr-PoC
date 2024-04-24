@@ -48,19 +48,33 @@ Setup cluster:
 https://docs.dapr.io/operations/hosting/kubernetes/cluster/
 ```
 I used minikube option:
+```
 minikube config set vm-driver virtualbox
-minikube start --cpus=4 --memory=4096 --no-vtx-check --embed-certs - it is suggested to use it without those 2 flags but they were necesarry for me
+```
+Create cluster - it is suggested to use it without those 2 flags but they were necesarry for me
+```
+minikube start --cpus=4 --memory=4096 --no-vtx-check --embed-certs
+```
 
 Make sure you are connected to minikube cluster:
+```
 kubectl config get-contexts
+```
+Init dapr in cluster (I had to unlock k8s in Docker Desktop)
 
-dapr init -k --dev (I had to unlock k8s in Docker Desktop)
-
+```
+dapr init -k --dev
+```
+Create server deployment
+```
 kubectl apply -f k8s/server.yaml
+```
 
-wait for pods to be created
-
+Wait for pods to be created and check IP address of a pod
+```
 kubectl describe pod <server-pod-name>
-Check IP address of a pod
-
+```
+Run health endpoint to check whether everything works
+```
 kubectl exec -it <server-pod-name> -- curl <ip-address>:8001/health
+```
