@@ -33,6 +33,11 @@ public class Controller {
     @ResponseStatus(code = HttpStatus.OK)
     public String health() {
         logger.debug("-- healthy --");
+        return "healthy";
+    }
+
+    @GetMapping("/generateId")
+    public int generateId() {
         Random random = new Random();
         int id = random.nextInt(999) + 1;
         client.publishEvent(
@@ -42,7 +47,7 @@ public class Controller {
                 singletonMap(Metadata.TTL_IN_SECONDS, MESSAGE_TTL_IN_SECONDS)).block();
         logger.info("PubSub message sent: " + id);
         messageRepository.saveLastMessageId(id);
-        return "healthy";
+        return id;
     }
 
     @GetMapping("/last")
