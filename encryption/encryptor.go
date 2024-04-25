@@ -34,13 +34,13 @@ func main() {
 		appPort = "8003"
 	}
 
-	s := daprd.NewService(":" + appPort)
-	err := s.AddTopicEventHandler(sub, eventHandler)
+	service := daprd.NewService(":" + appPort)
+	err := service.AddTopicEventHandler(sub, eventHandler)
 	if err != nil {
 		log.Fatalf("error adding topic subscription: %v", err)
 	}
 
-	err = s.Start()
+	err = service.Start()
 	if err != nil && err != http.ErrServerClosed {
 		log.Fatalf("error listenning: %v", err)
 	}

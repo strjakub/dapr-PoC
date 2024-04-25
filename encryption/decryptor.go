@@ -31,9 +31,9 @@ func main() {
 		appPort = "8004"
 	}
 
-	s := daprd.NewService(":" + appPort)
-	s.AddTopicEventHandler(sub, eventHandler)
-	s.Start()
+	service := daprd.NewService(":" + appPort)
+	service.AddTopicEventHandler(sub, eventHandler)
+	service.Start()
 }
 
 func eventHandler(ctx context.Context, e *common.TopicEvent) (retry bool, err error) {

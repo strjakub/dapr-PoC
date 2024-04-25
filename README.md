@@ -31,7 +31,7 @@ dapr run --app-id receiverLog --app-protocol http --app-port 8002 --dapr-http-po
 node app.js
 ```
 
-### Mini klient + server js
+### Mini client + server js
 ```
 dapr run --app-id app --app-port 3000 --dapr-http-port 3500 --resources-path ../components node server.js
 ```
@@ -39,7 +39,11 @@ adres:
 ```
 http://localhost:3000/
 ```
-
+### ENCRYPTION
+Key generation:
+```
+openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:4096 -out keys/rsa-private-key.pem 
+```             
 ### GO <3
 ```
 dapr run --app-id encryption --app-protocol http --app-port 8003 --dapr-http-port 9003  --resources-path ../components -- go run encryptor.go
