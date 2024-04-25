@@ -19,7 +19,6 @@ public class Controller {
     private static final Logger logger = LoggerFactory.getLogger(Controller.class);
     private static final String MESSAGE_TTL_IN_SECONDS = "1000";
     private static final String TOPIC_NAME = "common-topic";
-    private static final String SECOND_TOPIC_NAME = "second-topic";
     private static final String PUBSUB_NAME = "pubsub";
     private static final Random random = new Random();
     private final DaprClient client;
@@ -42,8 +41,7 @@ public class Controller {
     public int generatedId() {
         int id = random.nextInt(999) + 1;
         publishMessage(id, TOPIC_NAME);
-        publishMessage(id + 1, SECOND_TOPIC_NAME);
-        messageRepository.saveLastMessageId(id + 1);
+        messageRepository.saveLastMessageId(id);
         return id;
     }
 

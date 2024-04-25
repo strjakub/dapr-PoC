@@ -24,8 +24,8 @@ const (
 
 var sub = &common.Subscription{
 	PubsubName: "pubsub",
-	Topic:      "second-topic",
-	Route:      "/second-topic",
+	Topic:      "common-topic",
+	Route:      "/common-topic",
 }
 
 func main() {
