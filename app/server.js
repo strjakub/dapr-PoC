@@ -19,11 +19,18 @@ const daprPort = "9001";
 const client = new DaprClient({ daprHost, daprPort });
 
 const serviceAppId = "server";
-const serviceMethod = "health";
+const serviceHealthMethod = "health";
+const serviceIdMethod = "id";
 
 
 app.get('/health', async (_req, res) => {
-    const response = await client.invoker.invoke(serviceAppId, serviceMethod, HttpMethod.GET);
+    const response = await client.invoker.invoke(serviceAppId, serviceHealthMethod, HttpMethod.GET);
+    console.log(response);
+    res.json(response);
+});
+
+app.get('/id', async (_req, res) => {
+    const response = await client.invoker.invoke(serviceAppId, serviceIdMethod, HttpMethod.GET);
     console.log(response);
     res.json(response);
 });
