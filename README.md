@@ -40,6 +40,14 @@ adres:
 http://localhost:3000/
 ```
 
+### GO <3
+```
+dapr run --app-id encryption --app-protocol http --app-port 8003 --dapr-http-port 9003  --resources-path ../components -- go run encryptor.go
+```
+```
+dapr run --app-id encryption --app-protocol http --app-port 8004 --dapr-http-port 9004  --resources-path ../components -- go run decryptor.go
+```
+
 ### Zipkin observability
 Connect to Zipkin ui
 ```
