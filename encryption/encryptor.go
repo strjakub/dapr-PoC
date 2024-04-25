@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"io"
+	"encoding/base64"
 
 	"github.com/dapr/go-sdk/service/common"
 	dapr "github.com/dapr/go-sdk/client"
@@ -74,5 +75,11 @@ func encryptDecryptString(client dapr.Client) {
 	}
 	
 
-	client.PublishEvent(context.Background(), pubsubComponentName, pubsubPublishTopic, string(encBytes))	
+	base64EncodedData := encodeInBase64(encBytes)
+
+	client.PublishEvent(context.Background(), pubsubComponentName, pubsubPublishTopic, base64EncodedData)	
+}
+
+func encodeInBase64(data []byte) string {
+    return base64.StdEncoding.EncodeToString(data)
 }

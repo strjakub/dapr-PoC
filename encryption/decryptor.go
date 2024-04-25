@@ -3,9 +3,11 @@ package main
 import (
 	"context"
 	"fmt"
-	"strings"
+	// "strings"
 	"os"
 	"io"
+	"encoding/base64"
+	"bytes"
 
 	"github.com/dapr/go-sdk/service/common"
 	dapr "github.com/dapr/go-sdk/client"
@@ -36,18 +38,24 @@ func main() {
 
 func eventHandler(ctx context.Context, e *common.TopicEvent) (retry bool, err error) {
 	fmt.Println("Subscriber received data to decrypt")
-	
+
 	client, _ := dapr.NewClient()
 
-	dataString, _ := e.Data.(string)
-	//data := []byte(dataString)
+	dataString, ok := e.Data.(string)
+	if !ok {
+		fmt.Println("unexpected data type: %T", e.Data)
+	}
 
-	decStream, err := client.Decrypt(context.Background(),
-	strings.NewReader(dataString),
-	dapr.DecryptOptions{
-	ComponentName: CryptoComponentName,
-	KeyName: RSAKeyName,
-	},)
+
+	encryptedData, err := base64.StdEncoding.DecodeString(dataString)
+	if err != nil {
+		fmt.Println("error decoding base64 data: %v", err)
+	}
+
+
+	decStream, err := client.Decrypt(context.Background(), bytes.NewReader(encryptedData), dapr.DecryptOptions{
+		ComponentName: CryptoComponentName,
+	})
 	if err != nil {
 		fmt.Println("error while decrypting: %v", err)
 	}
@@ -57,7 +65,6 @@ func eventHandler(ctx context.Context, e *common.TopicEvent) (retry bool, err er
 		fmt.Println("error while reading stream: %v", err)
 	}
 
-	fmt.Printf("Decrypted the message, got %d bytes\n", len(decBytes))
-	fmt.Println(string(decBytes))
+	fmt.Println("Decrypted data:", string(decBytes))
 	return false, nil
 }
