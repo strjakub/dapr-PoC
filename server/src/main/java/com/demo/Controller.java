@@ -57,7 +57,6 @@ public class Controller {
                 topic,
                 message,
                 singletonMap(Metadata.TTL_IN_SECONDS, MESSAGE_TTL_IN_SECONDS)).block();
-        logger.info(String.format("PubSub message sent: %s to the topic: %s", message, topic));
-
+        logger.info("PubSub message sent: {} to the topic: {}", message, topic);
     }
 }
