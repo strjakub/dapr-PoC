@@ -56,7 +56,6 @@ func eventHandler(ctx context.Context, e *common.TopicEvent) (retry bool, err er
 func encryptDecryptString(client dapr.Client) {
 	const message = "Dogs are very cute"
 
-
 	encStream, err := client.Encrypt(context.Background(),
 		strings.NewReader(message),
 		dapr.EncryptOptions{
@@ -66,17 +65,15 @@ func encryptDecryptString(client dapr.Client) {
 		},
 	)
 	if err != nil {
-		fmt.Println("error while encrypting: %v", err)
+		log.Fatalf("error while encrypting: %v", err)
 	}
 
 	encBytes, err := io.ReadAll(encStream)
 	if err != nil {
-		fmt.Println("error while reading stream: %v", err)
+		log.Fatalf("error while reading stream: %v", err)
 	}
-	
 
 	base64EncodedData := encodeInBase64(encBytes)
-
 	client.PublishEvent(context.Background(), pubsubComponentName, pubsubPublishTopic, base64EncodedData)	
 }
 
