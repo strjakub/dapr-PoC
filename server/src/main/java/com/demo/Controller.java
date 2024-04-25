@@ -5,9 +5,7 @@ import io.dapr.client.domain.Metadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Random;
 
@@ -38,9 +36,9 @@ public class Controller {
     }
 
     @GetMapping("/id")
-    public int generatedId() {
+    public int id() {
         int id = random.nextInt(999) + 1;
-        publishMessage(id, TOPIC_NAME);
+        publishMessage(String.valueOf(id), TOPIC_NAME);
         messageRepository.saveLastMessageId(id);
         return id;
     }
@@ -51,7 +49,13 @@ public class Controller {
         return messageRepository.getLastMessageId();
     }
 
-    private void publishMessage(int message, String topic) {
+    @PostMapping("/feed")
+    public void feed(@RequestBody FeedRequest feedRequest) {
+        //TODO Marcel add sth about this to state store (and endpoint to retrieve it - with button)
+        publishMessage(feedRequest.dogName() + ":" + feedRequest.feedQuantity(), TOPIC_NAME);
+    }
+
+    private void publishMessage(String message, String topic) {
         client.publishEvent(
                 PUBSUB_NAME,
                 topic,

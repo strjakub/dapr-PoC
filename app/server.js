@@ -21,6 +21,7 @@ const client = new DaprClient({ daprHost, daprPort });
 const serviceAppId = "server";
 const serviceHealthMethod = "health";
 const serviceIdMethod = "id";
+const serviceFeedMethod = "feed";
 
 
 app.get('/health', async (_req, res) => {
@@ -35,11 +36,23 @@ app.get('/id', async (_req, res) => {
     res.json(response);
 });
 
+app.post('/feed', async (req, res) => {
+    const dogName = req.body.dogName;
+    const feedQuantity = req.body.feedQuantity;
+
+    const requestData = {
+        dogName: dogName,
+        feedQuantity: feedQuantity
+    };
+
+    const response = await client.invoker.invoke(serviceAppId, serviceFeedMethod, HttpMethod.POST, requestData);
+    console.log(response);
+    res.json(response);
+});
+
 app.get('/', (_req, res) => {
     res.sendFile(join(publicPath, 'index.html'));
 });
-
-
 
 app.use(express.static(join(__dirname, 'public')));
 app.listen(port, () => console.log(`Node App listening on port ${port}!`));

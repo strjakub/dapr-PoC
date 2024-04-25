@@ -54,6 +54,7 @@ func eventHandler(ctx context.Context, e *common.TopicEvent) (retry bool, err er
 }
 
 func encryptDecryptString(client dapr.Client) {
+	//TODO Basia this should encrypt received value, not hardcoded string
 	const message = "Dogs are very cute"
 
 	encStream, err := client.Encrypt(context.Background(),
