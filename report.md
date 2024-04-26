@@ -93,6 +93,115 @@ The case study will focus on the development of a microservice application using
 ![image](https://github.com/strjakub/dapr-PoC/assets/92330747/e9bd20b9-2f08-40ce-b630-6a3119234fba)
 
 ## 5. Environment configuration description<a name="configuration"></a>
+Environment configuration is the biggest advantage of DAPR. We can set up and modify entire setup by changing `.yaml` files. Then after rebuilding component with passing the path to apropriate directory we can make dapr use the configuration we just changed. That feature make changing configuration a lot easier.
+
+### PubSub configuration
+In the component yaml we can set the type of comunication, for example Redis, RabbitMQ or Kafka. The we can add metadata for it. In the subscription yaml we set the specific topics and routes, that way we can define what our app should use in communication flow.
+
+```yaml
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: pubsub
+spec:
+  type: pubsub.redis
+  version: v1
+  metadata:
+  - name: redisHost
+    value: localhost:6379
+  - name: redisPassword
+    value: ""
+```
+
+```yaml
+apiVersion: dapr.io/v2alpha1
+kind: Subscription
+metadata:
+  name: pubsub
+spec:
+  topic: common-topic
+  routes: 
+    default: /pubsub
+  pubsubname: pubsub
+scopes:
+  - server
+  - receiverLog
+  - receiverStore
+```
+
+### State store configuration
+Here we can configure our database including the type of database, port on which we can access it, and credentails.
+
+```yaml
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: statestore
+spec:
+  type: state.redis
+  version: v1
+  metadata:
+  - name: redisHost
+    value: localhost:6380
+  - name: redisPassword
+    secretKeyRef:
+      name: db.password
+      value: db.password
+auth: 
+  secretStore: secretstore
+scopes:
+ - server
+```
+
+### Local storage configuration
+The purpose of local storage is to load keys from a local directory. The most important configurable thing here is path to directory with keys.
+
+```yaml
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: localstorage
+spec:
+  type: crypto.dapr.localstorage
+  version: v1
+  metadata:
+    - name: path
+      value: ../keys
+```
+
+### Observability configuration
+It allows us to access observability console on a given endpoint.
+
+```yaml
+apiVersion: dapr.io/v1alpha1
+kind: Configuration
+metadata:
+  name: daprConfig
+  namespace: default
+spec:
+  tracing:
+    samplingRate: "1"
+    zipkin:
+      endpointAddress: "http://localhost:9411/api/v2/spans"
+```
+
+### Secret store configuration
+We can set here the path to file where the secrets are stored. It has similiar configuration to a local store.
+
+```yaml
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: secretstore
+spec:
+  type: secretstores.local.file
+  version: v1
+  metadata:
+  - name: secretsFile
+    value: ../secrets/secrets.json
+  - name: nestedSeparator
+    value: "."
+```
 ## 6. Installation method<a name="installation"></a>
 ## 7. How to reproduce<a name="reproducing"></a>
 ## 8. Demo deployment steps<a name="deployment"></a>
