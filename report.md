@@ -90,7 +90,7 @@ The case study will focus on the development of a microservice application using
 - Validation of Dapr’s effectiveness in microservices development and management
 
 ## 4. Solution architecture<a name="architecture"></a>
-![image](https://github.com/strjakub/dapr-PoC/assets/92330747/856c312f-dc9d-4b6d-ab85-da3ef31f3872)
+![image](https://github.com/strjakub/dapr-PoC/assets/92330747/e9bd20b9-2f08-40ce-b630-6a3119234fba)
 
 ## 5. Environment configuration description<a name="configuration"></a>
 ## 6. Installation method<a name="installation"></a>
