@@ -58,8 +58,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const images = document.querySelectorAll('.dog-image');
     images.forEach(image => {
         image.addEventListener('click', async () => {
-            var dogName = document.getElementById("dog-select").value;
-
+            var dogName = image.dataset.dogName;
+            
             const response = await fetch('/feed/' + dogName);
             if (!response.ok) {
                 throw new Error('Failed to fetch feed value: ' + response.statusText);
@@ -84,9 +84,9 @@ document.addEventListener('DOMContentLoaded', () => {
             overlay.style.borderRadius = '15px';
             image.style.position = 'relative'; 
             image.parentNode.appendChild(overlay);
-                setTimeout(() => {
-                    overlay.remove();
-                }, 2000);
+            setTimeout(() => {
+                overlay.remove();
+            }, 2000);
         });
     });
 });
