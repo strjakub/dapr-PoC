@@ -7,22 +7,22 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public class MessageRepository {
+class FeedRepository {
 
     private static final String STORE_NAME = "statestore";
 
     private final DaprClient daprClient;
 
-    public MessageRepository(DaprClient daprClient) {
+    FeedRepository(DaprClient daprClient) {
         this.daprClient = daprClient;
     }
 
-    public int getLastMessageId() {
-        return Optional.ofNullable(daprClient.getState(STORE_NAME, "lastMessage", Integer.class).block())
+    int getFeedValue(String dogName) {
+        return Optional.ofNullable(daprClient.getState(STORE_NAME, dogName, Integer.class).block())
                 .map(State::getValue).orElse(0);
     }
 
-    public void saveLastMessageId(int id) {
-        daprClient.saveState(STORE_NAME, "lastMessage", id).block();
+    void saveFeedValue(String dogName, int feedQuantity) {
+        daprClient.saveState(STORE_NAME, dogName, getFeedValue(dogName) + feedQuantity).block();
     }
 }

@@ -5,9 +5,7 @@ import io.dapr.client.domain.Metadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Random;
 
@@ -23,11 +21,11 @@ public class Controller {
     private static final Random random = new Random();
     private final DaprClient client;
 
-    private final MessageRepository messageRepository;
+    private final FeedRepository feedRepository;
 
-    public Controller(DaprClient client, MessageRepository messageRepository) {
+    public Controller(DaprClient client, FeedRepository feedRepository) {
         this.client = client;
-        this.messageRepository = messageRepository;
+        this.feedRepository = feedRepository;
     }
 
     @GetMapping("/health")
@@ -38,20 +36,26 @@ public class Controller {
     }
 
     @GetMapping("/id")
-    public int generatedId() {
+    public int id() {
         int id = random.nextInt(999) + 1;
-        publishMessage(id, TOPIC_NAME);
-        messageRepository.saveLastMessageId(id);
+        publishMessage(String.valueOf(id), TOPIC_NAME);
         return id;
     }
 
-    @GetMapping("/last")
-    @ResponseStatus(code = HttpStatus.OK)
-    public int last() {
-        return messageRepository.getLastMessageId();
+    @PostMapping("/feed")
+    public void feed(@RequestBody FeedRequest feedRequest) {
+        String dogName = feedRequest.dogName();
+        int feedQuantity = feedRequest.feedQuantity();
+        publishMessage(feedRequest.dogName() + ":" + feedRequest.feedQuantity(), TOPIC_NAME);
+        feedRepository.saveFeedValue(dogName, feedQuantity);
     }
 
-    private void publishMessage(int message, String topic) {
+    @GetMapping("/feed/{dogBreed}")
+    public int feed(@PathVariable String dogBreed) {
+        return feedRepository.getFeedValue(dogBreed);
+    }
+
+    private void publishMessage(String message, String topic) {
         client.publishEvent(
                 PUBSUB_NAME,
                 topic,
