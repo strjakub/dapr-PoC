@@ -1,6 +1,5 @@
 
 import express from 'express';
-import fetch from 'isomorphic-fetch';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { DaprClient, HttpMethod } from "@dapr/dapr";

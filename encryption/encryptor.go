@@ -52,7 +52,7 @@ func eventHandler(ctx context.Context, e *common.TopicEvent) (retry bool, err er
 	if data, ok := e.Data.(string); ok {
 		encryptDecryptString(client, data)
 	} else {
-		fmt.Println("Data is not of type string")
+		log.Fatalf("Data is not of type string")
 	}	
 	return false, nil
 }
