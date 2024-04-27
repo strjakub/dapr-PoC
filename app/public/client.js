@@ -28,17 +28,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const feedButton = document.getElementById('feedButton');
-    var dogName = document.getElementById("dog-select").value;
-    var feedQuantity = document.getElementById("feed-quantity").value;
     feedButton.addEventListener('click', async () => {
         try {
+            var dogName = document.getElementById("dog-select").value;
+            var feedQuantity = document.getElementById("feed-quantity").value;
             var requestData = {
                 dogName: dogName,
                 feedQuantity: feedQuantity
             };
 
             const response = await fetch('/feed', {
-                method: 'POST',
+                method: 'POST', 
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -54,4 +54,40 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error posting feed:', error);
         }
     });
+
+    const images = document.querySelectorAll('.dog-image');
+    images.forEach(image => {
+        image.addEventListener('click', async () => {
+            var dogName = document.getElementById("dog-select").value;
+
+            const response = await fetch('/feed/' + dogName);
+            if (!response.ok) {
+                throw new Error('Failed to fetch feed value: ' + response.statusText);
+            }
+            const data = await response.json();
+
+            const overlay = document.createElement('div');
+            overlay.className = 'overlay';
+            overlay.textContent = 'Feed quantity: ' + data;
+            overlay.style.backgroundColor = 'lightblue';
+            overlay.style.color = 'black';
+            overlay.style.position = 'absolute';
+            const imageRect = image.getBoundingClientRect();
+            overlay.style.top = imageRect.top + 'px'; 
+            overlay.style.left = imageRect.left + 'px'; 
+            overlay.style.width = image.clientWidth + 'px';
+            overlay.style.height = image.clientHeight + 'px';
+            overlay.style.display = 'flex';
+            overlay.style.justifyContent = 'center';
+            overlay.style.alignItems = 'center';
+            overlay.style.fontSize = '1rem';
+            overlay.style.borderRadius = '15px';
+            image.style.position = 'relative'; 
+            image.parentNode.appendChild(overlay);
+                setTimeout(() => {
+                    overlay.remove();
+                }, 2000);
+        });
+    });
 });
+

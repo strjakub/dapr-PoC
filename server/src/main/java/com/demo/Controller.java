@@ -21,11 +21,11 @@ public class Controller {
     private static final Random random = new Random();
     private final DaprClient client;
 
-    private final MessageRepository messageRepository;
+    private final FeedRepository feedRepository;
 
-    public Controller(DaprClient client, MessageRepository messageRepository) {
+    public Controller(DaprClient client, FeedRepository feedRepository) {
         this.client = client;
-        this.messageRepository = messageRepository;
+        this.feedRepository = feedRepository;
     }
 
     @GetMapping("/health")
@@ -39,20 +39,20 @@ public class Controller {
     public int id() {
         int id = random.nextInt(999) + 1;
         publishMessage(String.valueOf(id), TOPIC_NAME);
-        messageRepository.saveLastMessageId(id);
         return id;
-    }
-
-    @GetMapping("/last")
-    @ResponseStatus(code = HttpStatus.OK)
-    public int last() {
-        return messageRepository.getLastMessageId();
     }
 
     @PostMapping("/feed")
     public void feed(@RequestBody FeedRequest feedRequest) {
-        //TODO Marcel add sth about this to state store (and endpoint to retrieve it - with button)
+        String dogName = feedRequest.dogName();
+        int feedQuantity = feedRequest.feedQuantity();
         publishMessage(feedRequest.dogName() + ":" + feedRequest.feedQuantity(), TOPIC_NAME);
+        feedRepository.saveFeedValue(dogName, feedQuantity);
+    }
+
+    @GetMapping("/feed/{dogBreed}")
+    public int feed(@PathVariable String dogBreed) {
+        return feedRepository.getFeedValue(dogBreed);
     }
 
     private void publishMessage(String message, String topic) {

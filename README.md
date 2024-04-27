@@ -28,11 +28,6 @@ dapr run --app-id receiverLog --app-protocol http --app-port 8002 --dapr-http-po
 ### JS
 - service-invocation (client)
 ```
-node app.js
-```
-
-### Mini client + server js
-```
 dapr run --app-id app --app-port 3000 --dapr-http-port 3500 --resources-path ../components node server.js
 ```
 adres: 

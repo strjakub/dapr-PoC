@@ -49,14 +49,15 @@ func main() {
 func eventHandler(ctx context.Context, e *common.TopicEvent) (retry bool, err error) {
 	fmt.Println("Subscriber received:", e.Data)
 	client, _ := dapr.NewClient()
-	encryptDecryptString(client)	
+	if data, ok := e.Data.(string); ok {
+		encryptDecryptString(client, data)
+	} else {
+		fmt.Println("Data is not of type string")
+	}	
 	return false, nil
 }
 
-func encryptDecryptString(client dapr.Client) {
-	//TODO Basia this should encrypt received value, not hardcoded string
-	const message = "Dogs are very cute"
-
+func encryptDecryptString(client dapr.Client, message string) {
 	encStream, err := client.Encrypt(context.Background(),
 		strings.NewReader(message),
 		dapr.EncryptOptions{

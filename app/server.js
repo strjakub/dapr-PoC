@@ -50,6 +50,13 @@ app.post('/feed', async (req, res) => {
     res.json(response);
 });
 
+app.get('/feed/:dogName', async (req, res) => {
+    const dogName = req.params.dogName; 
+    const response = await client.invoker.invoke(serviceAppId, '/feed/' + dogName, HttpMethod.GET)
+    console.log(response);
+    res.json(response);    
+});
+
 app.get('/', (_req, res) => {
     res.sendFile(join(publicPath, 'index.html'));
 });
