@@ -6,7 +6,6 @@ import (
 	"log"
 	"strings"
 	"net/http"
-	"os"
 	"io"
 	"encoding/base64"
 
@@ -29,10 +28,7 @@ var sub = &common.Subscription{
 }
 
 func main() {
-	appPort := os.Getenv("APP_PORT")
-	if appPort == "" {
-		appPort = "8003"
-	}
+	appPort := "8003"
 
 	service := daprd.NewService(":" + appPort)
 	err := service.AddTopicEventHandler(sub, eventHandler)

@@ -7,4 +7,3 @@ spec:
   routes: 
     default: /pubsub
   pubsubname: pubsub
-  

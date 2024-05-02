@@ -1,26 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: server
+  name: app
   labels:
-    app: server
+    app: app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: server
+      app: app
   template:
     metadata:
       labels:
-        app: server
+        app: app
       annotations:
         dapr.io/enabled: "true"
-        dapr.io/app-id: "server"
-        dapr.io/port: "8001"
+        dapr.io/app-id: "app"
+        dapr.io/config: "tracing"
     spec:
       containers:
-      - name: server
-        image: marsel888/siuu:server
+      - name: app
+        image: marsel888/siuu:app
         ports:
-          - containerPort: 8001
+          - containerPort: 3000
         imagePullPolicy: Always
