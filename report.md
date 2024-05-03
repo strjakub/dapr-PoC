@@ -251,7 +251,7 @@ To sum things up, there are parts of dapr that were implemented really well and 
 - [Publish / Subscribe](https://docs.dapr.io/getting-started/quickstarts/pubsub-quickstart/)
 - [Service Invocation](https://docs.dapr.io/getting-started/quickstarts/serviceinvocation-quickstart/)
 - [State Management](https://docs.dapr.io/getting-started/quickstarts/statemanagement-quickstart/)
-- [Configuration](https://docs.dapr.io/getting-started/quickstarts/configuration-quickstart/)
+- [Secrets](https://docs.dapr.io/getting-started/quickstarts/secrets-quickstart/)
 - [Cryptography](https://docs.dapr.io/getting-started/quickstarts/cryptography-quickstart/)
 
 ##### [Dapr quickstarts](https://github.com/dapr/quickstarts)
