@@ -203,7 +203,55 @@ spec:
     value: "."
 ```
 ## 6. Installation method<a name="installation"></a>
+To set up and get everything up and running locally, you first need to start every microservice. To do it in dapr context, it is required to wrap service staring method in dapr command and pass application ports as well as ones that dapr should expose and path to component configuration. That will plug dapr socket into the service and let you communicate just between the dapr sockets, not worrying about what's underneath. Be mindful that you can request connection to dapr exposed ports only from other dapr clients, everything else is forbidden. Here are examples of dapr staring commands for languages that we used.
+### Java
+```
+ dapr run --app-id server --app-protocol http --app-port 8001 --dapr-http-port 9001 --resources-path ../components -- java -jar ./build/libs/demo-0.0.1-SNAPSHOT.jar
+```
+### Python
+```
+dapr run --app-id receiverLog --app-protocol http --app-port 8002 --dapr-http-port 9002 --resources-path ../components -- python main.py
+```
+### JavaScript
+```
+dapr run --app-id app --app-port 3000 --dapr-http-port 3500 --resources-path ../components node server.js
+```
+### Go
+```
+dapr run --app-id encryption --app-protocol http --app-port 8003 --dapr-http-port 9003  --resources-path ../components -- go run encryptor.go
+```
+```
+dapr run --app-id encryption --app-protocol http --app-port 8004 --dapr-http-port 9004  --resources-path ../components -- go run decryptor.go
+```
+That should make all services available after a while and able to communicate with one another. But to fully finish the setup, we also need an available state store, which we do using docker command. From the root of the project, we need to run
+```
+cd docker
+```
+```
+docker-compose up -d
+``` 
 ## 7. How to reproduce<a name="reproducing"></a>
+When the services are up and running we can open our web page and using the user interface create a request from which data will propagate through the entire system. For it to be sent between Go components using encryption, we need a key pair to encode and decode data safely. For simplicity, we assume that appropriate keys, for encoding purposes, can be sent between components securely. We can generate keys using openssl.
+```
+openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:4096 -out keys/rsa-private-key.pem 
+```
+After filling a form on the web page and submitting it, the data will be sand through JavaScript server to main component which is Java server. There it will be saved in databases making it possible to ask the service about it from web whenever we want to, and propagated through PubSub to Python component and Go service where it will be encoded and send further (in our case the second Go component — decoder). We can observe events in our app using zipkin.
 ## 8. Demo deployment steps<a name="deployment"></a>
+
 ## 9. Summary – conclusions<a name="summary"></a>
+We managed to create a system with non-trivial business logic and quickly integrate components with one another using dapr, despite the fact that every service was written in different language and was worked on by many people. In terms of system integration, dapr proved to be a big help. It also provides a possibility to quickly switch middleware underneath communication method using only configuration files.
+
+On the other hand, due to dapr being a new technology, there are some places and functionalities that lack documentation and on top of that are implemented in non-standard way what leads to problems in using some components provided by dapr. The most noticeable case here is cryptography, which has literally no documentation, only case specific examples implemented in .NET and Go.
+
+During implementation of web application with dapr client, we also encountered some bugs related to JavaScript modules not cooperating with one another and having errors in library implementation. The easiest to show example here is dapr client of service invocation implemented in react app, which leads to errors in gRPC-client implementation that is used by dapr.
+
+To sum things up, there are parts of dapr that were implemented really well and prove to be useful in creating scalable and easily maintainable systems, but you need to be wary of parts that are still in alpha phase and lack documentation about them.
 ## 10. References<a name="references"></a>
+#### [Dapr documentation](https://docs.dapr.io/)
+- [Publish / Subscribe](https://docs.dapr.io/getting-started/quickstarts/pubsub-quickstart/)
+- [Service Invocation](https://docs.dapr.io/getting-started/quickstarts/serviceinvocation-quickstart/)
+- [State Management](https://docs.dapr.io/getting-started/quickstarts/statemanagement-quickstart/)
+- [Secrets](https://docs.dapr.io/getting-started/quickstarts/secrets-quickstart/)
+- [Cryptography](https://docs.dapr.io/getting-started/quickstarts/cryptography-quickstart/)
+
+##### [Dapr quickstarts](https://github.com/dapr/quickstarts)
