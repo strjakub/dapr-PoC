@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: private-key
+data:
+  rsa-private-key.pem: |
+    -----BEGIN PRIVATE KEY-----
+    Your key here
+    -----END PRIVATE KEY-----

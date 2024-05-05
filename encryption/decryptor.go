@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"os"
 	"io"
 	"encoding/base64"
 	"bytes"
@@ -26,10 +25,7 @@ var sub = &common.Subscription{
 }
 
 func main() {
-	appPort := os.Getenv("APP_PORT")
-	if appPort == "" {
-		appPort = "8004"
-	}
+	appPort := "8004"
 
 	service := daprd.NewService(":" + appPort)
 	service.AddTopicEventHandler(sub, eventHandler)

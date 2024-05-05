@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: receiver
+  labels:
+    app: receiver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: receiver
+  template:
+    metadata:
+      labels:
+        app: receiver
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "receiver"
+        dapr.io/app-port: "8002"
+    spec:
+      containers:
+      - name: receiver
+        image: marsel888/siuu:receiver
+        ports:
+          - containerPort: 8002
+        imagePullPolicy: Always

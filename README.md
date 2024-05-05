@@ -74,18 +74,82 @@ kubectl config get-contexts
 Init dapr in cluster (I had to unlock k8s in Docker Desktop)
 
 ```
-dapr init -k --dev
+dapr init -k
+```
+Create zipkin pod for observability
+```
+kubectl create deployment zipkin --image openzipkin/zipkin
+kubectl expose deployment zipkin --type ClusterIP --port 9411
+```
+Create two redis pods
+```
+cd k8s/redis
+kubectl apply -f redis.yaml
+kubectl apply -f secret-redis-configmap.yaml
+kubectl apply -f secret-redis.yaml
+```
+Create kubernetes secret for secret-redis pod connectivity
+```
+cd ../secrets
+kubectl apply -f secretstore.yaml
+```
+Configure dapr components
+```
+cd ../components
+kubectl apply -f crypto.yaml
+kubectl apply -f pubsub.yaml
+kubectl apply -f secrets.yaml
+kubectl apply -f statestore.yaml
+kubectl apply -f subscription.yaml
+kubectl apply -f zipkin.yaml
 ```
 Create server deployment
 ```
-kubectl apply -f k8s/server.yaml
+cd ../server
+kubectl apply -f server.yaml
+```
+Create app deployment
+```
+cd ../app
+kubectl apply -f app.yaml
+```
+Create app load balancer to allow access from browser
+```
+kubectl apply -f app-service.yaml
+```
+Create receiver deployment
+```
+cd ../receiver
+kubectl apply -f receiver.yaml
+```
+Create crypto deployments
+```
+cd ../crypto
+```
+Put your private key in key-configmap.yaml
+```
+kubectl apply -f k8s/key-configmap.yaml
+kubectl apply -f k8s/encrytor.yaml
+kubectl apply -f k8s/decryptor.yaml
 ```
 
-Wait for pods to be created and check IP address of a pod
+Wait for pods to be created
+
+If you are using minikube you might need to enable app LoadBalancer by running new terminal and executing command
 ```
-kubectl describe pod <server-pod-name>
+minikube tunnel
 ```
-Run health endpoint to check whether everything works
+
+Check external ip of a load balancer
 ```
-kubectl exec -it <server-pod-name> -- curl <ip-address>:8001/health
+kubectl get svc
 ```
+
+Paste ip into your browser and check how it works
+
+To enable zipkin in your browser run:
+```
+kubectl port-forward svc/zipkin 9411:9411
+```
+
+

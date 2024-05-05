@@ -4,7 +4,7 @@ import json
 import os
 
 app = Flask(__name__)
-app_port = os.getenv('APP_PORT', '8002')
+app_port = '8002'
 
 @app.route('/dapr/subscribe', methods=['GET'])
 def subscribe():

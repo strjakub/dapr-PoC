@@ -13,7 +13,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const publicPath = join(__dirname, 'public');
 
 const daprHost = "127.0.0.1";
-const daprPort = "9001";
+const daprPort = process.env.DAPR_HTTP_PORT || "3500";;
 
 const client = new DaprClient({ daprHost, daprPort });
 
@@ -50,6 +50,9 @@ app.post('/feed', async (req, res) => {
 });
 
 app.get('/feed/:dogName', async (req, res) => {
+    console.log(daprHost)
+    console.log(daprPort)
+    console.log(serviceAppId)
     const dogName = req.params.dogName; 
     const response = await client.invoker.invoke(serviceAppId, '/feed/' + dogName, HttpMethod.GET)
     console.log(response);

@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: decryptor
+  labels:
+    app: decryptor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: decryptor
+  template:
+    metadata:
+      labels:
+        app: decryptor
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "decryptor"
+        dapr.io/app-port: "8004"
+        dapr.io/volume-mounts: "private-key-config:/var/local/keys"
+    spec:
+      containers:
+      - name: decryptor
+        image: marsel888/siuu:decryptor
+        ports:
+          - containerPort: 8004
+        imagePullPolicy: Always
+      volumes:
+      - name: private-key-config
+        configMap:
+          name: private-key
