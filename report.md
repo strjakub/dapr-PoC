@@ -324,6 +324,29 @@ To enable zipkin in your browser run:
 kubectl port-forward svc/zipkin 9411:9411
 ```
 
+#### Application
+When opening the application we get the view:
+![](/img/dogs.png)
+
+There you can either feed the dog by choosing its name, quantity of the food and then clicking the button **Feed the dog**, or get the quantity of the food the dog has been fed by clicking on the dog. 
+![](/img/dog-food.png)
+
+#### Logs from application
+Whole application traffic can be monitored in zipkin:
+![](/img/zipkin-traces.png)
+
+Each component writes its own logs. 
+Js (client):
+![](/img/js-logs.png)
+
+Server:
+![](/img/server-logs.png)
+
+RecieverLog:
+![](/img/recieverLog-logs.png)
+
+Encryption: 
+![](/img/encryption-logs.png)
 
 ## 9. Summary – conclusions<a name="summary"></a>
 We managed to create a system with non-trivial business logic and quickly integrate components with one another using dapr, despite the fact that every service was written in different language and was worked on by many people. In terms of system integration, dapr proved to be a big help. It also provides a possibility to quickly switch middleware underneath communication method using only configuration files.
