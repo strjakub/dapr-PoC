@@ -17,6 +17,7 @@ spec:
         dapr.io/enabled: "true"
         dapr.io/app-id: "app"
         dapr.io/config: "tracing"
+        dapr.io/volume-mounts: "private-key-config:/var/local/keys"
     spec:
       containers:
       - name: app
@@ -24,3 +25,7 @@ spec:
         ports:
           - containerPort: 3000
         imagePullPolicy: Always
+      volumes:
+      - name: private-key-config
+        configMap:
+          name: private-key

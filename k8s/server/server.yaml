@@ -17,6 +17,7 @@ spec:
         dapr.io/enabled: "true"
         dapr.io/app-id: "server"
         dapr.io/app-port: "8001"
+        dapr.io/volume-mounts: "private-key-config:/var/local/keys"
     spec:
       containers:
       - name: server
@@ -24,3 +25,7 @@ spec:
         ports:
           - containerPort: 8001
         imagePullPolicy: Always
+      volumes:
+      - name: private-key-config
+        configMap:
+          name: private-key
